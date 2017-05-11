@@ -47,12 +47,16 @@ var tripModule = (function () {
 
   function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
-    var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
-    days.push(newDay);
-    if (days.length === 1) {
-      currentDay = newDay;
-    }
-    switchTo(newDay);
+    // var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
+    $.post('/days', { number: days.length + 1 })
+    .then(function(day){
+      var newDay = dayModule.create({ number: day.number });
+      days.push(newDay);
+        if (days.length === 1) {
+          currentDay = newDay;
+        }
+      switchTo(newDay);
+    })
   }
 
   function deleteCurrentDay () {
@@ -82,6 +86,7 @@ var tripModule = (function () {
         .then(function (backendDays) { //all days sent from express route
           backendDays.map(dayModule.create); //ended off here. need to use map to get values of new days and push this to the days array.
           days.push(backendDays);
+          console.log("days:", days);
         })
         .catch( console.error.bind(console) );
       })
